@@ -1,0 +1,14 @@
+Servidor uvicorn de FastApi: uvicorn main:app --reload
+Instalar en un entorno env: python -m pip install ...
+
+Dependecias:
+
+    fastapi      - pip install fastapi
+    python-jose  - pip install python-jose[cryptography]
+    passlib      - pip install "passlib[bcrypt]"
+    
+Iniciar Base de datos MongoDB:
+
+    cd C:\Program Files\MongoDB\Server\6.0\bin
+    mongod
+
