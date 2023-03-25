@@ -1,5 +1,5 @@
 from db.models.race import Race, Sex
-from datetime import datetime
+
 
 def animal_schema(animal) -> dict:
     

@@ -48,6 +48,29 @@ async def create_animal(animal: Animal):
     
     return Animal(**new_animal)
 
+# Put method for existing animals:
+@router.put('/', response_model=Animal, status_code=status.HTTP_201_CREATED)
+async def modify_animal(animal: Animal):
+    
+    animal_dict = dict(animal)
+    animal_dict["race"] = str(animal_dict["race"].value)
+    animal_dict["sex"] = str(animal_dict["sex"].value)
+    del animal_dict["id"]
+    
+    try:
+        client_db.local.animals.find_one_and_replace({"_id": ObjectId(animal.id)}, animal)
+        
+    except:
+        return{"error":"error"}
+        
+        #raise HTTPException(
+        #        status_code=status.HTTP_409_CONFLICT, detail=f'No se ha actualizado el animal con id {animal.id}'
+        #   )
+    
+    return search_animal("_id", ObjectId(animal.id))
+        
+
+
 def search_animal(field: str, key):
     try:
         animal = client_db.local.animals.find_one({field: key})
