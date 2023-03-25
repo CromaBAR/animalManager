@@ -9,7 +9,7 @@ Dependecias:
     
 Iniciar Base de datos MongoDB:
 
-    cd C:\Program Files\MongoDB\Server\6.0\bin
+    cd "C:\Program Files\MongoDB\Server\6.0\bin"
     mongod
 
 Esto es una prueba para subir a git.

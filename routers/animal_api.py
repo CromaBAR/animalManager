@@ -48,29 +48,7 @@ async def create_animal(animal: Animal):
     
     return Animal(**new_animal)
 
-# Put method for existing animals:
-@router.put('/', response_model=Animal, status_code=status.HTTP_201_CREATED)
-async def modify_animal(animal: Animal):
     
-    animal_dict = dict(animal)
-    animal_dict["race"] = str(animal_dict["race"].value)
-    animal_dict["sex"] = str(animal_dict["sex"].value)
-    del animal_dict["id"]
-    
-    try:
-        client_db.local.animals.find_one_and_replace({"_id": ObjectId(animal.id)}, animal)
-        
-    except:
-        return{"error":"error"}
-        
-        #raise HTTPException(
-        #        status_code=status.HTTP_409_CONFLICT, detail=f'No se ha actualizado el animal con id {animal.id}'
-        #   )
-    
-    return search_animal("_id", ObjectId(animal.id))
-        
-
-
 def search_animal(field: str, key):
     try:
         animal = client_db.local.animals.find_one({field: key})
@@ -83,3 +61,52 @@ def is_animal_equal(animal1, animal2):
         return True
     else:
         return False
+    
+# Modify an animal in the database with the ID and the new data.
+@router.put("/{id}", response_model=Animal, status_code=status.HTTP_201_CREATED)
+async def modify_animal(id: str, animal: Animal):
+    
+    # Modify the animal object to be able to insert it in the database:
+    animal_dict = dict(animal)
+    animal_dict["race"] = str(animal_dict["race"].value)
+    animal_dict["sex"] = str(animal_dict["sex"].value)
+    del animal_dict["id"]
+    
+    # Check if the ID is valid:
+    if not ObjectId.is_valid(id):
+        raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail=f'ID {id} is not a valid id.'
+            )
+    
+    animal_found = search_animal("_id", ObjectId(id))
+    
+    # Check if the animal has been found:
+    if not isinstance(animal_found, Animal):
+        raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail=f'Animal with ID {id} not found.'
+            )
+    # Find and animal with the given ID and replace de object animal found on the database:
+    client_db.local.animals.replace_one({"_id": ObjectId(id)}, animal_dict)
+    
+    # Check if the animal has been modified:
+    return search_animal("_id", ObjectId(id))
+    
+# Delete in the database the animal with the given ID.
+@router.delete("/{id}", status_code=status.HTTP_200_OK)
+async def delete_animal(id: str):
+    
+    if not ObjectId.is_valid(id):
+        raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail=f'ID {id} is not a valid id.'
+            )
+    
+    searched_animal = search_animal("_id", ObjectId(id))
+    if not isinstance(searched_animal, Animal):
+        raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail=f'Animal with ID {id} not found.'
+            )
+    try:
+        client_db.local.animals.delete_one({"_id": ObjectId(id)})
+        return {"message": f"Animal with ID {id} deleted"}
+    except:
+        return {"error": "No se ha encontrado el animal"}
