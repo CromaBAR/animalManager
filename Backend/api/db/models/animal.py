@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from db.models.race import Race, Sex
+from Backend.api.db.models.race import Race, Sex
 from datetime import datetime
 from pydantic import BaseModel
 #from typing import Optional

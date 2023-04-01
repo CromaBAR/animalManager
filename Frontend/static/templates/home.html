@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Pag pcpal</title>
+    
+</head>
+<body>
+    <h1>Home</h1>
+    <p>Animales</p>
+    
+    <table>
+        {% for animal in animals_list %}
+        <tr><td>{{ animal['name'] }}</td></tr>
+        {% endfor %}
+    </table>
+    
+</body>
+</html>

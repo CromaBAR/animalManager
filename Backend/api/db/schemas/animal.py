@@ -1,4 +1,4 @@
-from db.models.race import Race, Sex
+from Backend.api.db.models.race import Race, Sex
 
 
 def animal_schema(animal) -> dict:
