@@ -1,6 +1,6 @@
 # Program to test the animal API
 from fastapi.testclient import TestClient
-from db.models.animal import Animal
+from Backend.api.db.models.animal import Animal
 from gestorAnimales.main import app
 
 client = TestClient(app)

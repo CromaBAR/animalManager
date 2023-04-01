@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
-from db.models.animal import Animal
-from db.models.race import Race
-from db.client_db import client_db
+from Backend.api.db.models.animal import Animal
+from Backend.api.db.models.race import Race
+from Backend.api.db.client_db import client_db
 from bson import ObjectId
-from db.schemas.animal import animal_schema, animals_schema
+from Backend.api.db.schemas.animal import animal_schema, animals_schema
 
 router = APIRouter(prefix="/animals",
                    tags=["animals"],
